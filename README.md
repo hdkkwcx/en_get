@@ -1,23 +1,42 @@
 # en_get
 
-One-click environment setup for students: copies bundled **Pi**, **R** and
-**Typst** config files into the right folders. It's a single `.exe` with no
-dependencies, so students just double-click it.
+One-click environment setup for students. A single `.exe` with no dependencies
+that does the following:
+
+| Step        | What it does |
+|-------------|--------------|
+| `typst`     | Installs the **modern-cug-report** template globally: `#import "@local/modern-cug-report:0.1.3": *` works anywhere |
+| `vscode`    | Puts `settings.json`, `keybindings.json` and the Typst snippets (`snippets\typst.json`) into `%APPDATA%\Code\User` |
+| `extension` | Installs the VS Code extension **VSCode Pi Agent Bridge** (`zenyui.vscode-pi-bridge`) |
+| `remote`    | Over SSH to `remote-p520`, puts `pi-vscode-context.ts` into `$dir_root/.pi/extensions/` and writes `$dir_root/.envrc` (`dir_root` = your `/data/users/<folder>`) |
+| `pi`, `r`   | Copies Pi / R config files (none bundled yet) |
+
+Any file that already exists and differs is kept as `*.bak`. If one step fails,
+the others still run.
 
 ## For students
-1. Download `en_get.exe` and double-click it.
-2. If Windows SmartScreen appears, click **More info → Run anyway**.
-3. Read the summary and press Enter. Existing files that differ are kept as `*.bak`.
+Before running it you need:
+- **VS Code** installed.
+- An SSH alias `remote-p520` in `%USERPROFILE%\.ssh\config`, so that
+  `ssh remote-p520` logs you in.
+- Internet access the first time you compile Typst (it downloads `@preview` packages).
 
-Options (from a terminal): `en_get --help`, `--only pi|r|typst`, `--dry-run`.
+Then double-click `en_get.exe`. If Windows SmartScreen appears, click **More info → Run anyway**.
+
+From a terminal:
+- `en_get --help`
+- `--only typst` (repeatable; steps: pi, r, typst, vscode, extension, remote)
+- `--dry-run`
+- `--dir-root /data/users/<your folder>` if the server folder isn't detected
+- `--ssh-host <alias>`
 
 ## For maintainers
-Put the config files into `assets/pi`, `assets/r` and `assets/typst` (see
-`assets/README.md`), then:
+Bundled files are in `assets/` (see `assets/README.md`) and `remote/pi-vscode-context.ts`.
 
 ```sh
 cargo test
-cargo run -- --root /tmp/fake-home --dry-run --no-pause   # preview on the Mac
+cargo run -- --root /tmp/fake-home --no-pause            # local copy steps into a fake home
+cargo run -- --dry-run --no-pause                        # preview everything, change nothing
 cargo build --release --target x86_64-pc-windows-gnu
 # -> target/x86_64-pc-windows-gnu/release/en_get.exe
 ```

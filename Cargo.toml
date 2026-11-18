@@ -5,6 +5,7 @@ edition = "2021"
 description = "One-click setup of Pi, R and Typst config files for students"
 
 [dependencies]
+base64 = "0.22"
 clap = { version = "4", default-features = false, features = ["std", "derive", "help", "usage", "error-context"] }
 dirs = "6"
 include_dir = "0.7"
