@@ -127,7 +127,10 @@ fn run(args: &Args) -> Vec<&'static str> {
     let steps: Vec<Step> = if !args.only.is_empty() {
         args.only.clone()
     } else if args.root.is_some() {
-        Step::ALL.into_iter().filter(|s| s.target(&Base::from_root(Path::new(""))).is_some()).collect()
+        Step::ALL
+            .into_iter()
+            .filter(|s| s.target(&Base::from_root(Path::new(""))).is_some())
+            .collect()
     } else {
         Step::ALL.to_vec()
     };

@@ -23,6 +23,14 @@ cargo build --release --target x86_64-pc-windows-gnu      # -> target/x86_64-pc-
 ```
 Cross-compiling needs the `x86_64-pc-windows-gnu` rustup target and `brew install mingw-w64`. The linker is configured in `.cargo/config.toml`.
 
+## CI
+`.github/workflows/ci.yml` modelled on the tutor's kongdd/modern-cug-herper:
+- `test`: fmt --check, clippy -D warnings and tests on windows-latest and ubuntu-latest. Ubuntu is needed because the remote tests are unix-only and run under dash.
+- `windows-exe`: MSVC release build with static CRT, a smoke install into the runner's `%APPDATA%`, then `typst compile tests/test.typ`, then an artifact upload. A pushed `v*` tag also publishes a GitHub Release.
+- `coverage`: Codecov.
+
+Keep `cargo fmt` (rustfmt.toml: `use_small_heuristics = "Max"`) and clippy clean.
+
 ## Architecture
 - **Steps** (`Step` in `src/main.rs`) are of two kinds:
   - *Copy steps* (`pi`, `r`, `typst`, `vscode`): `Step::target()` returns `Some`, and `assets/<name>/` is copied there.

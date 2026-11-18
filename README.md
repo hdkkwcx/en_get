@@ -1,5 +1,7 @@
 # en_get
 
+[![CI](https://github.com/hdkkwcx/en_get/actions/workflows/ci.yml/badge.svg)](https://github.com/hdkkwcx/en_get/actions/workflows/ci.yml)
+
 One-click environment setup for students. A single `.exe` with no dependencies
 that does the following:
 
@@ -44,3 +46,15 @@ cargo build --release --target x86_64-pc-windows-gnu
 
 Cross-compiling from macOS needs `rustup target add x86_64-pc-windows-gnu` and
 `brew install mingw-w64`. The linker is set in `.cargo/config.toml`.
+
+## CI and releasing
+GitHub Actions (`.github/workflows/ci.yml`) runs on every push and pull request:
+- `test`: fmt, clippy and tests on Windows and Ubuntu.
+- `windows-exe`: builds the exe, installs the template on the runner, and runs `typst compile tests/test.typ`. Download the exe from the run's **Artifacts**.
+- `coverage`: uploads coverage to Codecov.
+
+To publish a release, tag a commit and push the tag. CI builds the exe and creates the GitHub Release (notes in `.github/release-notes.md`):
+
+```sh
+git tag v0.1.1 && git push origin v0.1.1
+```

@@ -174,7 +174,9 @@ pub fn run(host: &str, dir_root: Option<&str>, dry_run: bool) -> Result<(), Stri
         validate_dir_root(dir)?;
     }
     let command = remote_command(dir_root);
-    println!("  ssh {host}: pi-vscode-context.ts -> $dir_root/.pi/extensions/, write $dir_root/.envrc");
+    println!(
+        "  ssh {host}: pi-vscode-context.ts -> $dir_root/.pi/extensions/, write $dir_root/.envrc"
+    );
     if dry_run {
         println!("  (dry run) would run: ssh -- {host} <{} byte setup command>", command.len());
         return Ok(());
@@ -249,7 +251,8 @@ mod tests {
             fs::create_dir_all(&bin).unwrap();
             let fake = bin.join("direnv");
             fs::write(&fake, "#!/bin/sh\necho \"$*\" >> \"$HOME/direnv.log\"\n").unwrap();
-            fs::set_permissions(&fake, std::os::unix::fs::PermissionsExt::from_mode(0o755)).unwrap();
+            fs::set_permissions(&fake, std::os::unix::fs::PermissionsExt::from_mode(0o755))
+                .unwrap();
             path = format!("{}:{path}", bin.display());
         }
         let tty = env.answers.map_or("/nonexistent/tty".into(), |p| p.to_str().unwrap().to_owned());
@@ -270,7 +273,8 @@ mod tests {
     }
 
     fn read(path: impl AsRef<Path>) -> String {
-        fs::read_to_string(path.as_ref()).unwrap_or_else(|e| panic!("{}: {e}", path.as_ref().display()))
+        fs::read_to_string(path.as_ref())
+            .unwrap_or_else(|e| panic!("{}: {e}", path.as_ref().display()))
     }
 
     fn dirs(base: &Path) -> (std::path::PathBuf, std::path::PathBuf) {
@@ -332,7 +336,12 @@ mod tests {
                 .unwrap();
             let script = script_with(None, users.to_str().unwrap());
             let answers = base.join("answers");
-            let env = Env { home: &home, login_shell: "/bin/bash", direnv: true, answers: Some(&answers) };
+            let env = Env {
+                home: &home,
+                login_shell: "/bin/bash",
+                direnv: true,
+                answers: Some(&answers),
+            };
 
             fs::write(&answers, "\n9\r\n2\r\n").unwrap();
             let stdout = ok(shell, &sh(shell, &script, &env));
@@ -367,14 +376,17 @@ mod tests {
             let env = Env { home: &home, login_shell: "/bin/zsh", direnv: false, answers: None };
             let out = sh(shell, &cmd, &env);
             assert_eq!(out.status.code(), Some(10), "{shell}");
-            assert!(String::from_utf8_lossy(&out.stderr).contains("WARNING: direnv is not installed"));
+            assert!(
+                String::from_utf8_lossy(&out.stderr).contains("WARNING: direnv is not installed")
+            );
             assert_installed(&dir);
             assert!(read(home.join(".zshrc")).contains("eval \"$(direnv hook zsh)\""));
             assert!(!home.join(".bashrc").exists());
 
             let home2 = base.join("home2");
             fs::create_dir_all(&home2).unwrap();
-            let env = Env { home: &home2, login_shell: "/usr/bin/fish", direnv: true, answers: None };
+            let env =
+                Env { home: &home2, login_shell: "/usr/bin/fish", direnv: true, answers: None };
             let stdout = ok(shell, &sh(shell, &cmd, &env));
             assert!(stdout.contains("add the direnv hook by hand"));
             assert!(!home2.join(".bashrc").exists() && !home2.join(".zshrc").exists());
