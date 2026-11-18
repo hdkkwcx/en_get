@@ -5,6 +5,7 @@ on:
     branches: [main]
     tags: ['v*']
   pull_request:
+  workflow_dispatch: # "Run workflow" button on the Actions tab
 
 env:
   CARGO_TERM_COLOR: always
