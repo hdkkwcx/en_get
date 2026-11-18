@@ -80,7 +80,8 @@ pub fn install(dir: &Dir, prefix: &Path, target: &Path, dry_run: bool) -> Result
                     continue;
                 }
                 let rel = file.path().strip_prefix(prefix).unwrap_or(file.path());
-                let dest = target.join(rel);
+                // Join component-wise so Windows gets `\` throughout, not `local\a/b`.
+                let dest = rel.components().fold(target.to_path_buf(), |p, c| p.join(c));
                 let action = copy_file(file.contents(), &dest, dry_run)
                     .map_err(|e| format!("{}: {e}", dest.display()))?;
                 let tag = match action {

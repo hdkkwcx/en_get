@@ -8,7 +8,7 @@ that does the following:
 | `typst`     | Installs the **modern-cug-report** template globally: `#import "@local/modern-cug-report:0.1.3": *` works anywhere |
 | `vscode`    | Puts `settings.json`, `keybindings.json` and the Typst snippets (`snippets\typst.json`) into `%APPDATA%\Code\User` |
 | `extension` | Installs the VS Code extension **VSCode Pi Agent Bridge** (`zenyui.vscode-pi-bridge`) |
-| `remote`    | Over SSH to `remote-p520`, puts `pi-vscode-context.ts` into `$dir_root/.pi/extensions/` and writes `$dir_root/.envrc` (`dir_root` = your `/data/users/<folder>`) |
+| `remote`    | Over SSH to `remote-p520`, puts `pi-vscode-context.ts` into `$dir_root/.pi/extensions/` and writes `$dir_root/.envrc`. `dir_root` is your `/data/users/<folder>`; on a shared login it **asks which folder is yours** (or type a new name to create one) |
 | `pi`, `r`   | Copies Pi / R config files (none bundled yet) |
 
 Any file that already exists and differs is kept as `*.bak`. If one step fails,
